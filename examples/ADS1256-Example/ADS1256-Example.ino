@@ -1,13 +1,13 @@
 //This code belongs to the ADS1256 library developed by Curious Scientist
 //A very detailed documentation can be found at: https://curiousscientist.tech/ads1256-custom-library 
 
-#include <ADS1256.h>
+#include "ADS1256.h"
 
 //Below a few examples of pin descriptions for different microcontrollers I used:
 //ADS1256 A(2, 0, 8, 10, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Arduino Nano
-ADS1256 A(7, 10, 5, 9, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).      //ATmega32U4 
+// ADS1256 A(7, 10, 5, 9, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).      //ATmega32U4 
 //ADS1256 A(PA2, 0, 0, PA4, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float). //STM32 blue pill
-//ADS1256 A(16, 17, 0, 5, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).   //ESP32 WROOM 32
+ADS1256 A(4, 5, -1, 10, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).   //ESP32 WROOM 32
 //ADS1256 A(7, 0, 8, 10, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //Teensy 4.0
 //ADS1256 A(7, 0, 6, 5, 2.500); //DRDY, RESET, SYNC(PDWN), CS, VREF(float).    //RP2040 Waveshare Mini
 
@@ -81,20 +81,22 @@ void setup()
 
   //Below is a demonstration to change the values through the built-on functions of the library
   //Set a PGA value
-  A.setPGA(PGA_1);  //0b00000000 - DEC: 0
+  A.setPGA(PGA_64);  //0b00000000 - DEC: 0
   //--------------------------------------------
 
   //Set input channels
-  A.setMUX(DIFF_6_7); //0b01100111 - DEC: 103
+  // A.setMUX(SING_7); //0b01100111 - DEC: 103
+  A.setMUX(DIFF_6_7);
   //--------------------------------------------
 
   //Set DRATE
-  A.setDRATE(DRATE_5SPS); //0b00010011 - DEC: 19
+  A.setDRATE(DRATE_100SPS); //0b00010011 - DEC: 19
   //--------------------------------------------
 
   //Read back the above 3 values to check if the writing was succesful
   Serial.print("PGA: ");
-  Serial.println(A.readRegister(IO_REG));
+  // Serial.println(A.readRegister(IO_REG));
+  Serial.println(A.getPGA());
   delay(100);
   //--
   Serial.print("MUX: ");
@@ -264,6 +266,9 @@ void loop()
           while (!Serial.available());
           A.setPGA(pgaValues[pgaSelection]);
           //Example: P4 will select the PGA = 16
+          Serial.print("PGA: ");
+          Serial.println(A.getPGA());
+          // Serial.println(A.readRegister(IO_REG));
         }
         break;
       //--------------------------------------------------------------------------------------------------------
